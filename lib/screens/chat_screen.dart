@@ -62,7 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                messagesStream();
+//                messagesStream();
                 //Implement logout functionality
 //                _auth.signOut();
 //                Navigator.pop(context);
@@ -87,15 +87,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   );
                 }
                 final messages = snapshot.data.documents;
-                List<Text> messageWidgets = [];
+                List<MessageBubble> messageBubbles = [];
                 for(var message in messages){
                   final messageText = message.data['text'];
                   final messageSender = message.data['sender'];
-                  final messageWidget = Text('$messageText from $messageSender');
-                  messageWidgets.add(messageWidget);
+                  final messageBubble = MessageBubble(sender: messageSender,text: messageText,);
+                  messageBubbles.add(messageBubble);
                 }
-                return Column(
-                  children: messageWidgets,
+                return Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
+                    children: messageBubbles,
+                  ),
                 );
 
               },
@@ -132,6 +135,36 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+
+class MessageBubble extends StatelessWidget {
+  MessageBubble({this.text,this.sender});
+  final String text;
+  final String sender;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Text(sender,style: TextStyle(fontSize: 12.0,color: Colors.black54),),
+          Material(
+              borderRadius: BorderRadius.circular(30.0),
+              elevation: 5.0,
+              color: Colors.lightBlueAccent,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 20.0),
+                child: Text(text,style: TextStyle(
+                  color: Colors.white,
+
+                ),),
+              )),
+        ],
       ),
     );
   }
